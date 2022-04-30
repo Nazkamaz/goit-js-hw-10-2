@@ -12,21 +12,23 @@ const countryInfo = document.querySelector('.country-info');
 const handleInput = e => {
         countriList.innerHTML = '';
         countryInfo.innerHTML = '';
-      return fetchCountries(e.target.value.trim()).then(countries => {
+      return fetchCountries(e.target.value.trim())
+      .then(countries => {
     console.log(countries);
     if (countries.length > 10) {
       return Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
-    } else if (countries.length > 1 && countries.length < 10) {
+    } 
+    else if (countries.length > 1 && countries.length < 10) {
         
      const listMarcup = countries
         .map(({ name, flags }) => {
           return `<li>
     <img
             src="${flags.svg}"
-            alt="${name} flag"
-            width='24px'
+            alt="${name.official} flag"
+            width='34px'
     />
-    <p>${name}</p>
+    <h2>${name.official}</h2>
     </li>`;
         })
         .join('');
@@ -36,11 +38,14 @@ const handleInput = e => {
               const countryMarcup = countries
         .map(({ name, capital, population, flags, languages }) => {
                       return `<li>
+                      <div>
     <img
             src="${flags.svg}"
             alt="${name} flag"
-            width='24px'
+            width='34px'
     />
+    <h2>${name.official}</h2>
+    </div>
     <p>Capital: ${capital}</p>
     <p>Population: ${population}</p>
     <p>Languages: ${Object.values(languages)}</p>
@@ -49,10 +54,9 @@ const handleInput = e => {
         .join('');
       countryInfo.innerHTML = countryMarcup;
     }
-    // else if(!response.ok){
-    //     return Notiflix.Notify.warning("Oops, there is no country with that name")
-    // }
-  });
-};
-
+    })
+  .catch(error => {
+    Notiflix.Notify.failure("Oops, there is no country with that name")
+});
+}
 field.addEventListener('input', debounce(handleInput, DEBOUNCE_DELAY));
